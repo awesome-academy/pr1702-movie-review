@@ -1,10 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-  before_action :search
+  before_action :load_search
 
-  def search
-    @search = Movie.ransack(params[:q])
-  end
 
   def admin?
     current_user && current_user.admin?
@@ -15,5 +12,11 @@ class ApplicationController < ActionController::Base
       flash[:alert] = t ".opp"
       redirect_to root_path
     end
+  end
+
+  private
+
+  def load_search
+    @search = Movie.ransack(params[:q])
   end
 end
