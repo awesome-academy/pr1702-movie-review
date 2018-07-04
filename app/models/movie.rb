@@ -9,9 +9,10 @@ class Movie < ApplicationRecord
 
   scope :top_updated, -> {order(created_at: :desc)}
   scope :top_reviewed, -> {joins(:reviews).merge(Review.order created_at: :desc).uniq}
-  scope :top_rated, -> {joins(:reviews).merge(Review.order(rating: :desc))
-                        .where("reviews.rating > #{Settings.movies.rating.score}")}
 
+  scope :top_rated, -> {joins(:reviews).where("reviews.created_at >= ?", 
+                        Date.today.beginning_of_week).order("reviews.rating DESC").uniq}
+  
 
   scope :top_by, -> (type) {
     case type
